@@ -1,0 +1,15 @@
+services:
+  bbc-news-api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: ${DOCKERHUB_USERNAME:-local}/bbc-news-classifier:${IMAGE_TAG:-latest}
+    ports:
+      - "8000:8000"
+    environment:
+      MODEL_PATH: /app/artifacts/model.joblib
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8000/health', timeout=5)"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
