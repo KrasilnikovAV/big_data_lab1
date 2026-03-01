@@ -79,7 +79,7 @@ docker compose down
 - CI выполняет: обучение, тесты, сборку образа и push в DockerHub (если заданы secrets), подпись образа `cosign`, генерацию `dev_sec_ops.yml`.
 - CD запускается вручную/по расписанию/после CI, поднимает контейнер и выполняет функциональный сценарий из `scenario.json` внутри контейнера (`docker compose exec`).
 
-## Что подставить для отчёта
+## Ссылки
 
-- Ссылка на GitHub репозиторий: `<YOUR_GITHUB_REPO_URL>`
-- Ссылка на DockerHub image: `docker.io/<DOCKERHUB_USERNAME>/bbc-news-classifier`
+- GitHub: https://github.com/KrasilnikovAV/big_data_lab1
+- DockerHub: https://hub.docker.com/r/kabeton2/bbc-news-classifier
