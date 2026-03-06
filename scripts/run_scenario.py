@@ -16,8 +16,31 @@ def _resolve_json_path(payload: dict, path: str) -> object:
     return current
 
 
+def _resolve_scenario_path(scenario_path: Path) -> Path:
+    if scenario_path.exists():
+        return scenario_path
+
+    checked: list[Path] = [scenario_path]
+
+    if not scenario_path.is_absolute():
+        fallback_paths = [
+            Path("/app") / scenario_path,
+            Path(__file__).resolve().parents[1] / scenario_path,
+        ]
+        for path in fallback_paths:
+            checked.append(path)
+            if path.exists():
+                return path
+
+    checked_paths = ", ".join(str(path) for path in checked)
+    raise FileNotFoundError(
+        f"Scenario file was not found. Checked: {checked_paths}. Current working dir: {Path.cwd()}"
+    )
+
+
 def run_scenario(scenario_path: Path, base_url_override: str | None = None) -> int:
-    scenario = json.loads(scenario_path.read_text(encoding="utf-8"))
+    resolved_scenario_path = _resolve_scenario_path(scenario_path)
+    scenario = json.loads(resolved_scenario_path.read_text(encoding="utf-8"))
     base_url = (base_url_override or scenario["base_url"]).rstrip("/")
     checks = scenario.get("checks", [])
     session = requests.Session()

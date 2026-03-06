@@ -15,7 +15,14 @@ jobs:
     if: github.event_name != 'workflow_run' || github.event.workflow_run.conclusion == 'success'
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout
+      - name: Checkout (workflow_run head)
+        if: github.event_name == 'workflow_run'
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.workflow_run.head_sha }}
+
+      - name: Checkout (current ref)
+        if: github.event_name != 'workflow_run'
         uses: actions/checkout@v4
 
       - name: Start container
@@ -35,7 +42,7 @@ jobs:
       - name: Run functional scenario
         run: |
           docker compose exec -T bbc-news-api \
-            python scripts/run_scenario.py --scenario scenario.json --base-url http://127.0.0.1:8000
+            python scripts/run_scenario.py --scenario /app/scenario.json --base-url http://127.0.0.1:8000
 
       - name: Show logs on failure
         if: failure()
