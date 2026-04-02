@@ -13,10 +13,10 @@ def _clean_text_values(series: pd.Series) -> pd.Series:
 
 def load_training_frame(config: DataConfig) -> pd.DataFrame:
     frame = pd.read_csv(config.train_path)
-    frame = frame[[config.id_column, config.text_column, config.target_column]].dropna()
+    frame = frame[[config.id_column, config.text_column, config.target_column]].dropna().copy()
 
-    frame[config.text_column] = _clean_text_values(frame[config.text_column])
-    frame[config.target_column] = _clean_text_values(frame[config.target_column])
+    frame.loc[:, config.text_column] = _clean_text_values(frame[config.text_column])
+    frame.loc[:, config.target_column] = _clean_text_values(frame[config.target_column])
 
     frame = frame[
         (frame[config.text_column] != "")
@@ -27,8 +27,8 @@ def load_training_frame(config: DataConfig) -> pd.DataFrame:
 
 def load_inference_frame(config: DataConfig) -> pd.DataFrame:
     frame = pd.read_csv(config.test_path)
-    frame = frame[[config.id_column, config.text_column]].dropna()
-    frame[config.text_column] = _clean_text_values(frame[config.text_column])
+    frame = frame[[config.id_column, config.text_column]].dropna().copy()
+    frame.loc[:, config.text_column] = _clean_text_values(frame[config.text_column])
     frame = frame[frame[config.text_column] != ""].copy()
     return frame.reset_index(drop=True)
 
