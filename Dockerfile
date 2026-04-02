@@ -8,7 +8,10 @@ ENV PYTHONPATH=/app/src
 ENV MODEL_PATH=/app/artifacts/model.joblib
 
 COPY requirements.txt .
-RUN pip install --no-cache-dir --upgrade pip && \
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends curl && \
+    rm -rf /var/lib/apt/lists/* && \
+    pip install --no-cache-dir --upgrade pip && \
     pip install --no-cache-dir -r requirements.txt
 
 COPY config.ini .
